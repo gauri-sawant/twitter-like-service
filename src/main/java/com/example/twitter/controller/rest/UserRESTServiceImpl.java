@@ -43,7 +43,7 @@ public class UserRESTServiceImpl implements UserRESTService {
 				return Response.status(HttpStatus.CONFLICT.value()).build();
 			}
 		} catch (Exception ex) {
-			LOGGER.error("<<createUser :: Failed {}", ex.getMessage());
+			LOGGER.error("<<createUser :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -57,8 +57,11 @@ public class UserRESTServiceImpl implements UserRESTService {
 			userRepo.deleteById(Long.parseLong(userId));
 			LOGGER.info("<<deleteUser :: User deleted successfully with tweets, followers and replies");
 			return Response.noContent().build();
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<deleteUser :: Failed, bad userId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
-			LOGGER.error("<<deleteUser :: Failed {}", ex.getMessage());
+			LOGGER.error("<<deleteUser :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -76,8 +79,8 @@ public class UserRESTServiceImpl implements UserRESTService {
 											.collect(Collectors.toCollection(ArrayList::new));
 			LOGGER.info("<<getUsers :: list size {}", userDTOs.size());
 			return Response.ok(userDTOs).build();
-		}catch (Exception ex) {
-			LOGGER.error("<<getUsers :: Failed {}", ex.getMessage());
+		} catch (Exception ex) {
+			LOGGER.error("<<getUsers :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -97,16 +100,19 @@ public class UserRESTServiceImpl implements UserRESTService {
 				if(!(followedUser.getUserId().equals(followerUser.getUserId()))) {
 					followedUser.getFollowerUser().add(followerUser);
 					userRepo.save(followedUser);
-					LOGGER.info("<<User {} followed {}", followerUser.getUserName(), followedUser.getUserName());
+					LOGGER.info("<<followUser :: User {} followed {}", followerUser.getUserName(), followedUser.getUserName());
 					return Response.status(HttpStatus.OK.value()).build();
 				}
-				LOGGER.info("<<followUser is forbidden, either follower or followed user not found");
-				return Response.status(HttpStatus.NOT_FOUND.value()).build();
+				LOGGER.info("<<followUser same user is forbidden");
+				return Response.status(HttpStatus.FORBIDDEN.value()).build();
 			} 
 			LOGGER.info("<<followUser is forbidden");
 			return Response.status(HttpStatus.FORBIDDEN.value()).build();
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<followUser :: Failed, bad userId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
-			LOGGER.info("<<followUser :: Failed {}", ex.getMessage());
+			LOGGER.info("<<followUser :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -114,7 +120,7 @@ public class UserRESTServiceImpl implements UserRESTService {
 	@Override
 	public Response unfollowUser(String fromUser, String toUserId) {
 		try {
-
+			LOGGER.info(">>unfollowUser");
 			Optional<User> followerUser = findUser(Long.parseLong(fromUser));
 			Optional<User> followedUser = findUser(Long.parseLong(toUserId));
 
@@ -124,12 +130,19 @@ public class UserRESTServiceImpl implements UserRESTService {
 				followedUser.get().getFollowerUser().removeIf(entry -> entry.getUserId().equals(followerId));
 				if (followerSize != followedUser.get().getFollowerUser().size()) {
 					userRepo.save(followedUser.get());
+					LOGGER.info("<<unfollowUser successful");
 					return Response.status(HttpStatus.OK.value()).build();
 				}
-				return Response.status(HttpStatus.NOT_FOUND.value()).build();
+				LOGGER.info("<<unfollowUser :: forbidden");
+				return Response.status(HttpStatus.FORBIDDEN.value()).build();
 			}
-			return Response.status(HttpStatus.FORBIDDEN.value()).build();
+			LOGGER.info("<<unfollowUser :: followed/follower user not found");
+			return Response.status(HttpStatus.NOT_FOUND.value()).build();
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<unfollowUser :: Failed, bad userId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
+			LOGGER.info("<<unfollowUser :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -137,6 +150,7 @@ public class UserRESTServiceImpl implements UserRESTService {
 	@Override
 	public Response getfollowers(String userId) {
 		try {
+			LOGGER.info(">>getfollowers :: userId {}", userId);
 			Optional<User> user = findUser(Long.parseLong(userId));
 			List<UserDTO> result = new ArrayList<>();
 			if (user.isPresent()) {
@@ -148,17 +162,22 @@ public class UserRESTServiceImpl implements UserRESTService {
 										.build())
 										.collect(Collectors.toCollection(ArrayList::new));
 			}
+			LOGGER.info("<<getfollowers :: follower list size {} ", result.size());
 			if (!result.isEmpty()) {
 				return Response.ok(result).build();
 			} else {
 				return Response.noContent().build();
 			}
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<getfollowers :: Failed, bad userId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
+			LOGGER.info("<<getfollowers :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
 
-	private Optional<User> findUser(Long id) {
+	public Optional<User> findUser(Long id) {
 		return userRepo.findById(id);
 	}
 

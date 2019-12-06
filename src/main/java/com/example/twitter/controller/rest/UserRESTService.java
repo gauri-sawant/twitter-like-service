@@ -67,6 +67,8 @@ public interface UserRESTService {
 	@ApiOperation(value = "Follow a user")
 	@ApiResponses(value = {
 			@ApiResponse(code = HTTPResponseCodes.OK, message = "User followed"),
+			@ApiResponse(code = HTTPResponseCodes.FORBIDDEN, message = "Follow user forbidden"),
+			@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "Follower or Followed user not found"),
 			@ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later or contact customer support.")
 	})
 	Response followUser(@PathParam("followerUserId") String fromUser, @PathParam("followedUserId") String toUserId);
@@ -78,6 +80,8 @@ public interface UserRESTService {
 	@ApiOperation(value = "Unfollow a user")
 	@ApiResponses(value = {
 			@ApiResponse(code = HTTPResponseCodes.OK, message = "User unfollowed"),
+			@ApiResponse(code = HTTPResponseCodes.FORBIDDEN, message = "Follow user forbidden"),
+			@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "Follower user not found in the follower list of the user"),
 			@ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later or contact customer support.")
 	})
 	Response unfollowUser(@PathParam("followerUserId") String fromUser, @PathParam("followedUserId") String toUserId);

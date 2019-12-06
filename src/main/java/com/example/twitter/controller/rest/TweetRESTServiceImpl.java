@@ -50,8 +50,11 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 			tweetRepo.save(tweet);
 			LOGGER.info("<<createTweet :: Tweet created for user : {}", userId);
 			return Response.status(HttpStatus.CREATED.value()).build();
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<createTweet :: Failed, bad userId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
-			LOGGER.error("<<createTweet :: Failed {}", ex.getMessage());
+			LOGGER.error("<<createTweet :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -60,7 +63,7 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 	@Override
 	public Response addReply(RepliesDTO replyDTO, String tweetId, String userId) {
 		try {
-			LOGGER.info(">>addReply");
+			LOGGER.info(">>addReply tweetId {}, userId {}",tweetId, userId);
 			Replies reply = new Replies();
 			User user = new User(Long.parseLong(userId));
 			Tweet tweet = new Tweet(Long.parseLong(tweetId));
@@ -71,8 +74,11 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 			replyRepo.save(reply);
 			LOGGER.info("<<addReply :: Reply added for user : {}", userId);
 			return Response.status(HttpStatus.CREATED.value()).build();
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<addReply :: Failed, bad userId/tweetId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
-			LOGGER.error("<<addReply :: {}", ex.getMessage());
+			LOGGER.error("<<addReply :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -100,8 +106,11 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 			} else {
 				return Response.noContent().build();
 			}
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<getTweetsForUser :: Failed, bad userId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
-			LOGGER.error("<<getTweetsForUser :: {}", ex.getMessage());
+			LOGGER.error("<<getTweetsForUser :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
@@ -120,8 +129,11 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 			} else {
 				return Response.noContent().build();
 			}
+		} catch(NumberFormatException nex) {
+			LOGGER.info("<<getFollowerTweetRepliesForUser :: Failed, bad userId parameter");
+			return Response.status(HttpStatus.BAD_REQUEST.value()).build();
 		} catch (Exception ex) {
-			LOGGER.error("<<getFollowerTweetRepliesForUser :: {}", ex.getMessage());
+			LOGGER.error("<<getFollowerTweetRepliesForUser :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
 	}
