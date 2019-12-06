@@ -33,7 +33,7 @@ public interface TweetRESTService {
 	@Produces({ MediaType.APPLICATION_JSON + ";charset=utf-8;version=" + API_VERSION })
 	@POST
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Create a user")
+	@ApiOperation(value = "Create a tweet")
 	@ApiResponses(value = {
 			@ApiResponse(code = HTTPResponseCodes.CREATED, message = "User created"),
 			@ApiResponse(code = HTTPResponseCodes.CONFLICT, message = "User Name already exists"),
@@ -47,7 +47,7 @@ public interface TweetRESTService {
 	@Produces({ MediaType.APPLICATION_JSON + ";charset=utf-8;version=" + API_VERSION })
 	@POST
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Create a user")
+	@ApiOperation(value = "Add a reply")
 	@ApiResponses(value = {
 			@ApiResponse(code = HTTPResponseCodes.CREATED, message = "User created"),
 			@ApiResponse(code = HTTPResponseCodes.CONFLICT, message = "User Name already exists"),
