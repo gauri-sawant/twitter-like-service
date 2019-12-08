@@ -70,29 +70,30 @@ public class UserRestServiceTest {
 		
 		
 		given().when()
-		.accept(MediaType.APPLICATION_JSON)
-		.contentType(MediaType.APPLICATION_JSON)
-		.header(HEADER_KEY, HEADER_VALUE)
-		.post("/user/follow/follower/2/follow/1")
-		.then()
-		.statusCode(200)
-		.log()
-		.body().extract()
-		.response();
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HEADER_KEY, HEADER_VALUE)
+				.post("/user/follow/follower/2/follow/1")
+				.then()
+				.statusCode(200)
+				.log()
+				.body().extract()
+				.response();
 	}
 
 	@Test
 	public void shouldGiveUnauthorizedAccessWhenHeaderNotPresent()
 			throws JsonMappingException, JsonProcessingException {
 
-		given().when().accept(MediaType.APPLICATION_JSON)
-		.contentType(MediaType.APPLICATION_JSON)
-		.get("/user/getUsers")
-		.then()
-		.statusCode(401)
-		.log()
-		.body()
-		.extract().response();
+		given().when()
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.get("/user/getUsers")
+				.then()
+				.statusCode(401)
+				.log()
+				.body()
+				.extract().response();
 	}
 
 	@Test
