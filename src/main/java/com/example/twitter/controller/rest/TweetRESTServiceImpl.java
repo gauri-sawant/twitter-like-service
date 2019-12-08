@@ -2,10 +2,12 @@ package com.example.twitter.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
@@ -37,16 +39,26 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 	
 	@Resource
 	RepliesRepository replyRepo;
+	
+	@Inject
+	UserRESTServiceImpl userRESTServiceImpl;
 
 	@Override
 	public Response createTweet(TweetDTO tweetDTO, String userId) {
 		try {
 			LOGGER.info(">>createTweet");
 			Tweet tweet = new Tweet();
-			User user = new User(Long.parseLong(userId));
-			tweet.setAttachment(tweetDTO.getTweetAttachment());
+			tweet.setAttachmentFileName(tweetDTO.getTweetAttachment());
 			tweet.setText(tweetDTO.getTweetText());
-			tweet.setUser(user);
+			Optional<User> user = userRESTServiceImpl.findUser(Long.parseLong(userId));
+			if(user.isPresent()) {
+				tweet.setUser(user.get());
+			} else {
+				
+				LOGGER.info("<<createTweet :: Failed, userId not found");
+				return Response.status(HttpStatus.NOT_FOUND.value()).build();
+			}
+			
 			tweetRepo.save(tweet);
 			LOGGER.info("<<createTweet :: Tweet created for user : {}", userId);
 			return Response.status(HttpStatus.CREATED.value()).build();
@@ -65,12 +77,17 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 		try {
 			LOGGER.info(">>addReply tweetId {}, userId {}",tweetId, userId);
 			Replies reply = new Replies();
-			User user = new User(Long.parseLong(userId));
 			Tweet tweet = new Tweet(Long.parseLong(tweetId));
-			reply.setAttachment(replyDTO.getReplyAttachment());
+			reply.setAttachmentFileName(replyDTO.getReplyAttachment());
 			reply.setText(replyDTO.getReplyText());
 			reply.setTweet(tweet);
-			reply.setUser(user);
+			Optional<User> user = userRESTServiceImpl.findUser(Long.parseLong(userId));
+			if(user.isPresent()) {
+				reply.setUser(user.get());
+			} else {
+				LOGGER.info("<<addReply :: Failed, userId not found");
+				return Response.status(HttpStatus.NOT_FOUND.value()).build();
+			}
 			replyRepo.save(reply);
 			LOGGER.info("<<addReply :: Reply added for user : {}", userId);
 			return Response.status(HttpStatus.CREATED.value()).build();
@@ -96,7 +113,7 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 						.map(entry -> new TweetDTO.Builder()
 								.tweetId(entry.getTweetId())
 								.tweetText(entry.getText())
-								.tweetAttachment(entry.getAttachment())
+								.tweetAttachment(entry.getAttachmentFileName())
 								.user(mapUsertoDTO(entry.getUser())).build())
 						.collect(Collectors.toCollection(ArrayList::new));
 			}
@@ -144,7 +161,7 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 		TweetDTO tweetDTO = new TweetDTO.Builder()
 									.tweetId(tweet.getTweetId())
 									.tweetText(tweet.getText())
-									.tweetAttachment(tweet.getAttachment())
+									.tweetAttachment(tweet.getAttachmentFileName())
 									.user(mapUsertoDTO(tweet.getUser())).build();
 		
 		Set<User> followerUsers = tweet.getUser().getFollowerUser();
@@ -160,7 +177,7 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 											.replyId(reply.getReplyId())
 											.replyText(reply.getText())
 											.user(mapUsertoDTO(reply.getUser()))
-											.replyAttachment(reply.getAttachment())
+											.replyAttachment(reply.getAttachmentFileName())
 											.build())
 											.collect(Collectors.toCollection(ArrayList::new));
 			

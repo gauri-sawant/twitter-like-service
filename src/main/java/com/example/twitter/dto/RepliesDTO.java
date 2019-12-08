@@ -18,7 +18,7 @@ public class RepliesDTO {
 	private final String replyText;
 
 	@JsonProperty(value = "reply-attachment")
-	private final byte[] replyAttachment;
+	private final String replyAttachment;
 
 	@JsonProperty(value = "reply-user")
 	private final UserDTO user;
@@ -38,7 +38,7 @@ public class RepliesDTO {
 		return replyText;
 	}
 
-	public byte[] getReplyAttachment() {
+	public String getReplyAttachment() {
 		return replyAttachment;
 	}
 
@@ -55,7 +55,7 @@ public class RepliesDTO {
 		private String replyText;
 
 		@JsonProperty(value = "reply-attachment")
-		private byte[] replyAttachment;
+		private String replyAttachment;
 
 		@JsonProperty(value = "reply-user")
 		private UserDTO user;
@@ -70,7 +70,7 @@ public class RepliesDTO {
 			return this;
 		}
 
-		public Builder replyAttachment(byte[] replyAttachment) {
+		public Builder replyAttachment(String replyAttachment) {
 			this.replyAttachment = replyAttachment;
 			return this;
 		}

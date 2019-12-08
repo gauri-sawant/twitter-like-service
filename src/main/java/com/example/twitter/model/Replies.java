@@ -36,8 +36,8 @@ public class Replies implements Serializable {
 	private String text;
 
 	@Lob
-	@Column(name = "ATTACHMENT")
-	private byte[] attachment;
+	@Column(name = "ATTACHMENT_FILE_NAME")
+	private String attachmentFileName;
 
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
@@ -55,8 +55,8 @@ public class Replies implements Serializable {
 		this.text = text;
 	}
 
-	public void setAttachment(byte[] attachment) {
-		this.attachment = attachment;
+	public void setAttachmentFileName(String attachmentFileName) {
+		this.attachmentFileName = attachmentFileName;
 	}
 
 	public void setUser(User user) {
@@ -79,8 +79,8 @@ public class Replies implements Serializable {
 		return text;
 	}
 
-	public byte[] getAttachment() {
-		return attachment;
+	public String getAttachmentFileName() {
+		return attachmentFileName;
 	}
 
 	public User getUser() {

@@ -18,7 +18,7 @@ public class TweetDTO {
 	private final String tweetText;
 
 	@JsonProperty(value = "tweet-attachment")
-	private final byte[] tweetAttachment;
+	private final String tweetAttachment;
 
 	@JsonProperty(value = "tweet-user")
 	private final UserDTO user;
@@ -38,7 +38,7 @@ public class TweetDTO {
 		return tweetText;
 	}
 
-	public byte[] getTweetAttachment() {
+	public String getTweetAttachment() {
 		return tweetAttachment;
 	}
 
@@ -55,7 +55,7 @@ public class TweetDTO {
 		private String tweetText;
 
 		@JsonProperty(value = "tweet-attachment")
-		private byte[] tweetAttachment;
+		private String tweetAttachment;
 
 		@JsonProperty(value = "tweet-user")
 		private UserDTO user;
@@ -70,7 +70,7 @@ public class TweetDTO {
 			return this;
 		}
 
-		public Builder tweetAttachment(byte[] tweetAttachment) {
+		public Builder tweetAttachment(String tweetAttachment) {
 			this.tweetAttachment = tweetAttachment;
 			return this;
 		}

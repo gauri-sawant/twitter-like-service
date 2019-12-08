@@ -44,8 +44,8 @@ public interface UserRESTService {
     @GET
     @ApiOperation(value = "Get list of users", response = UserDTO[].class)
     @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "OK."),
-            @ApiResponse(code = 500, message = "The server experienced a runtime exception while processing the request. Try again later.")
+    		@ApiResponse(code = HTTPResponseCodes.OK, message = "OK."),
+            @ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later.")
     		})
     Response getUsers();
 	
@@ -92,9 +92,9 @@ public interface UserRESTService {
     @GET
     @ApiOperation(value = "get followers for a user", response = UserDTO[].class)
     @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "OK."),
-    		@ApiResponse(code = 404, message = "Requested user not found."),
-            @ApiResponse(code = 500, message = "The server experienced a runtime exception while processing the request. Try again later.")
+    		@ApiResponse(code = HTTPResponseCodes.OK, message = "OK."),
+    		@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "Requested user not found."),
+            @ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later.")
     		})
     Response getfollowers(@PathParam("userId") String userId);
 }

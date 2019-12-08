@@ -33,10 +33,11 @@ public interface TweetRESTService {
 	@Produces({ MediaType.APPLICATION_JSON + ";charset=utf-8;version=" + API_VERSION })
 	@POST
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Create a tweet")
+	@ApiOperation(value = "Create a tweet, **the api currently accepts file name as tweet attachment")
 	@ApiResponses(value = {
 			@ApiResponse(code = HTTPResponseCodes.CREATED, message = "User created"),
 			@ApiResponse(code = HTTPResponseCodes.CONFLICT, message = "User Name already exists"),
+			@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "User not found."),
 			@ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later or contact customer support.")
 	})
 	Response createTweet(TweetDTO tweetDTO, @PathParam("userId") String userId);
@@ -47,10 +48,11 @@ public interface TweetRESTService {
 	@Produces({ MediaType.APPLICATION_JSON + ";charset=utf-8;version=" + API_VERSION })
 	@POST
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Add a reply")
+	@ApiOperation(value = "Add a reply, **the api currently accepts file name as reply attachment")
 	@ApiResponses(value = {
-			@ApiResponse(code = HTTPResponseCodes.CREATED, message = "User created"),
+			@ApiResponse(code = HTTPResponseCodes.CREATED, message = "Reply created"),
 			@ApiResponse(code = HTTPResponseCodes.CONFLICT, message = "User Name already exists"),
+			@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "User not found."),
 			@ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later or contact customer support.")
 	})
 	Response addReply(RepliesDTO replyDTO, @PathParam("tweetId") String tweetId, @PathParam("userId") String userId);
@@ -59,9 +61,9 @@ public interface TweetRESTService {
 	@Produces({MediaType.APPLICATION_JSON + ";charset=utf-8;version=" + API_VERSION})
 	@GET
 	@ApiOperation(value = "Get user tweets", response = TweetDTO[].class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK."),
-			@ApiResponse(code = 404, message = "Requested user not found."),
-			@ApiResponse(code = 500, message = "The server experienced a runtime exception while processing the request. Try again later.") })
+	@ApiResponses(value = { @ApiResponse(code = HTTPResponseCodes.OK, message = "OK."),
+			@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "Requested user not found."),
+			@ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later.") })
 	Response getTweetsForUser(@PathParam("userId") String userId);
 	
 	
@@ -70,8 +72,8 @@ public interface TweetRESTService {
 	@Produces({MediaType.APPLICATION_JSON + ";charset=utf-8;version=" + API_VERSION})
 	@GET
 	@ApiOperation(value = "Get user tweets and follower replies to the tweet", response = TweetRepliesDTO[].class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK."),
-			@ApiResponse(code = 404, message = "Requested user not found."),
-			@ApiResponse(code = 500, message = "The server experienced a runtime exception while processing the request. Try again later.") })
+	@ApiResponses(value = { @ApiResponse(code = HTTPResponseCodes.OK, message = "OK."),
+			@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "Requested user not found."),
+			@ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later.") })
 	Response getFollowerTweetRepliesForUser(@PathParam("userId") String userId);
 }

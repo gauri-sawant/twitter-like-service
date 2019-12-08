@@ -39,8 +39,8 @@ public class Tweet implements Serializable {
 	private String text;
 
 	@Lob
-	@Column(name = "ATTACHMENT")
-	private byte[] attachment;
+	@Column(name = "ATTACHMENT_FILE_NAME")
+	private String attachmentFileName;
 
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
@@ -61,8 +61,8 @@ public class Tweet implements Serializable {
 		this.user = user;
 	}
 
-	public void setAttachment(byte[] attachment) {
-		this.attachment = attachment;
+	public void setAttachmentFileName(String attachmentFileName) {
+		this.attachmentFileName = attachmentFileName;
 	}
 
 	public static long getSerialversionuid() {
@@ -77,8 +77,8 @@ public class Tweet implements Serializable {
 		return text;
 	}
 
-	public byte[] getAttachment() {
-		return attachment;
+	public String getAttachmentFileName() {
+		return attachmentFileName;
 	}
 
 	public User getUser() {
@@ -87,6 +87,8 @@ public class Tweet implements Serializable {
 
 	public List<Replies> getReplies() {
 		return replies;
+		
+		
 	}
 
 	public void setReplies(List<Replies> replies) {
