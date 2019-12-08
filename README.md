@@ -16,8 +16,8 @@ User REST API:
 6) Delete Users (Deletes all associations for the user - followers, tweets, replies)
 
 Tweet REST API:
-1) Add a tweet
-2) Add a reply to the tweet
+1) Add a tweet (Attachment field only accepts filenames)
+2) Add a reply to the tweet (Attachment field only accepts filenames)
 3) Get tweets of a user
 4) Get a list of tweets of a user (including self-tweets and replies by followers)
 
