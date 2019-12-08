@@ -24,3 +24,5 @@ Tweet REST API:
 Swagger URL : https://twitter-like-service.herokuapp.com/twitter/swagger.json
 
 The API is accessible only using the access jwt token (legitimate users gets access token)
+
+Project includes test cases to test all functions of the API and captured validation failures and behaviors (Using Rest Assured)
