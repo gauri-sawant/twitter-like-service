@@ -26,6 +26,10 @@ import com.twitter.persistence.RepliesRepository;
 import com.twitter.persistence.TweetRepository;
 import com.twitter.persistence.UserRepository;
 
+/**
+ * @author gauri sawant
+ *
+ */
 @Component
 public class TweetRESTServiceImpl implements TweetRESTService {
 
@@ -44,8 +48,14 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 	UserRESTServiceImpl userRESTServiceImpl;
 	
 	@Inject
-	TweetRESTServiceImpl tweetRESTServiceImpl;
+	TweetRESTServiceImpl tweetServiceImpl;
 
+	/*
+	 * @see com.twitter.controller.rest.TweetRESTService#createTweet(com.twitter.dto.TweetDTO, java.lang.String)
+	 * The method maps TweetDTO to tweet entity and persists the same.
+	 * Method adds a tweet for existing user
+	 * The method looks at the user/input validations
+	 */
 	@Override
 	public Response createTweet(TweetDTO tweetDTO, String userId) {
 		try {
@@ -75,6 +85,12 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 	}
 	
 
+	/*
+	 * @see com.twitter.controller.rest.TweetRESTService#addReply(com.twitter.dto.RepliesDTO, java.lang.String, java.lang.String)
+	 * The method maps ReplyDTO to Replies entity and persists the same.
+	 * Method adds a reply for existing tweet
+	 * The method looks at the user/input validations
+	 */
 	@Override
 	public Response addReply(RepliesDTO replyDTO, String tweetId, String userId) {
 		try {
@@ -91,7 +107,7 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 				return Response.status(HttpStatus.NOT_FOUND.value()).build();
 			}
 			
-			Optional<Tweet> tweet = tweetRESTServiceImpl.findTweetById(Long.parseLong(tweetId));
+			Optional<Tweet> tweet = tweetServiceImpl.findTweetById(Long.parseLong(tweetId));
 			if(tweet.isPresent()) {
 				reply.setTweet(tweet.get());
 			} else {
@@ -112,6 +128,10 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 	}
 
 	
+	/*
+	 * @see com.twitter.controller.rest.TweetRESTService#getTweetsForUser(java.lang.String)
+	 * The method fetches all persisted tweets for a user and maps them to TweetDTO (json representation)
+	 */
 	@Override
 	public Response getTweetsForUser(String userId) {
 
@@ -143,6 +163,11 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 		}
 	}
 
+	/*
+	 * @see com.twitter.controller.rest.TweetRESTService#getFollowerTweetRepliesForUser(java.lang.String)
+	 * The method fetches all persisted tweets for a user and replies from the followers.
+	 * The method maps the entities in TweetRepliesDTO json object
+	 */
 	@Override
 	public Response getFollowerTweetRepliesForUser(String userId) {
 		try {
@@ -164,6 +189,14 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 			LOGGER.error("<<getFollowerTweetRepliesForUser :: Failed {}", ex);
 			return Response.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 		}
+	}
+	
+	/**
+	 * @see com.twitter.controller.rest.TweetRESTService#findTweetById(java.lang.Long)
+	 * The method fetches tweet by Id
+	 */
+	public Optional<Tweet> findTweetById(Long tweetId) {
+		return tweetRepo.findById(tweetId); 
 	}
 	
 	private TweetRepliesDTO fetchFollowerReply(Tweet tweet) {
@@ -196,10 +229,6 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 		LOGGER.info("<<fetchFollowerReply");
 		return new TweetRepliesDTO.Builder().tweetDTO(tweetDTO)
 											.repliesDTOs(repliesDTOs).build();
-	}
-
-	public Optional<Tweet> findTweetById(Long tweetId) {
-		return tweetRepo.findById(tweetId); 
 	}
 	
 	private UserDTO mapUsertoDTO(User user) {

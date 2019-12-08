@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.swagger.annotations.ApiModel;
 
+/**
+ * @author gauri sawant
+ *
+ */
 @ApiModel(
         description = "Representation of a Follower"
 )

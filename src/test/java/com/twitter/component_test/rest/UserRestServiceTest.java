@@ -1,4 +1,4 @@
-package com.twitter.controller.rest;
+package com.twitter.component_test.rest;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,10 +25,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.twitter.TwitterApplication;
+import com.twitter.controller.rest.UserRESTServiceImpl;
 import com.twitter.dto.UserDTO;
 import com.twitter.model.User;
 import com.twitter.persistence.UserRepository;
 
+/**
+ * @author gauri sawant
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TwitterApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)

@@ -22,6 +22,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * @author gauri sawant
+ *
+ */
 @Api(value = "/tweet")
 @Path(value = "/tweet")
 @Secured

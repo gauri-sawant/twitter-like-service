@@ -19,6 +19,10 @@ import com.twitter.model.User;
 import com.twitter.persistence.UserRepository;
 
 
+/**
+ * @author gauri sawant
+ *
+ */
 @Component
 public class UserRESTServiceImpl implements UserRESTService {
 
@@ -27,6 +31,12 @@ public class UserRESTServiceImpl implements UserRESTService {
 	@Resource
 	UserRepository userRepo;
 	
+	
+	/** 
+	 * @see com.twitter.controller.rest.UserRESTService#createUser(com.twitter.dto.UserDTO)
+	 * The method had UserDTO as input parameter, which is a JSON representation of a user
+	 * The method maps the user DTO to user entity and persists the same
+	 */
 	@Override
 	public Response createUser(UserDTO userDTO) {
 		try {
@@ -49,6 +59,11 @@ public class UserRESTServiceImpl implements UserRESTService {
 		}
 	}
 	
+	/** 
+	 * @see com.twitter.controller.rest.UserRESTService#deleteUser(java.lang.String)
+	 * The method had userId as input parameter.
+	 * The method is declared transactional as it clears all the associations of a user - followers, tweets & replies
+	 */
 	@Override
 	@Transactional
 	public Response deleteUser(String userId) {
@@ -67,6 +82,10 @@ public class UserRESTServiceImpl implements UserRESTService {
 		}
 	}
 	
+	/** 
+	 * @see com.twitter.controller.rest.UserRESTService#getUsers()
+	 * The method fetches all user entities which are mapped to user json objects
+	 */
 	@Override
 	public Response getUsers() {
 		try {
@@ -86,6 +105,11 @@ public class UserRESTServiceImpl implements UserRESTService {
 		}
 	}
 	
+	/** 
+	 * @see com.twitter.controller.rest.UserRESTService#followUser(java.lang.String, java.lang.String)
+	 * The method had follower UserId and followed UserId as String input parameters.
+	 * The method add a new association for a user, if doesnt exists
+	 */
 	@Override
 	public Response followUser(String followerUserId, String followedUserId) {
 		try {
@@ -118,12 +142,17 @@ public class UserRESTServiceImpl implements UserRESTService {
 		}
 	}
 
+	/** 
+	 * @see com.twitter.controller.rest.UserRESTService#unfollowUser(java.lang.String, java.lang.String)
+	 * The method had follower UserId and followed UserId as String input parameters.
+	 * The method removes association for a user, if exists
+	 */
 	@Override
-	public Response unfollowUser(String fromUser, String toUserId) {
+	public Response unfollowUser(String followerUserId, String followedUserId) {
 		try {
 			LOGGER.info(">>unfollowUser");
-			Optional<User> followerUser = findUser(Long.parseLong(fromUser));
-			Optional<User> followedUser = findUser(Long.parseLong(toUserId));
+			Optional<User> followerUser = findUser(Long.parseLong(followerUserId));
+			Optional<User> followedUser = findUser(Long.parseLong(followedUserId));
 
 			if (followedUser.isPresent() && followerUser.isPresent()) {
 				Long followerId = followerUser.get().getUserId();
@@ -148,6 +177,10 @@ public class UserRESTServiceImpl implements UserRESTService {
 		}
 	}
 
+	/** 
+	 * @see com.twitter.controller.rest.UserRESTService#getfollowers(java.lang.String)
+	 * The method fetches all users following the input UserId
+	 */
 	@Override
 	public Response getfollowers(String userId) {
 		try {
@@ -178,6 +211,10 @@ public class UserRESTServiceImpl implements UserRESTService {
 		}
 	}
 
+	/**
+	 * @see com.twitter.controller.rest.UserRESTService#findUser(java.lang.Long)
+	 * The method fetches user by Id
+	 */
 	public Optional<User> findUser(Long id) {
 		return userRepo.findById(id);
 	}

@@ -1,5 +1,8 @@
 package com.twitter.controller.rest;
-
+/**
+ * @author gauri sawant
+ *
+ */
 public final class HTTPResponseCodes {
 
     public static final int INTERNAL_SERVER_ERROR = 500;

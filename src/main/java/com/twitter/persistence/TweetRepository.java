@@ -7,6 +7,10 @@ import org.springframework.data.repository.query.Param;
 
 import com.twitter.model.Tweet;
 
+/**
+ * @author gauri sawant
+ *
+ */
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
 	List<Tweet> getTweets(@Param("userId") Long userId);

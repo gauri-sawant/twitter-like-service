@@ -23,6 +23,10 @@ import javax.persistence.JoinColumn;
 
 import io.swagger.annotations.ApiModel;
 
+/**
+ * @author gauri sawant
+ *
+ */
 @Entity
 @Table(name = "USERS")
 @ApiModel(description = "Users")

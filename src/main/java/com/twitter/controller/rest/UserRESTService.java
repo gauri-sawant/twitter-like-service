@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.twitter.authorization.Secured;
 import com.twitter.dto.UserDTO;
 
-
+/**
+ * @author gauri sawant
+ *
+ */
 @Api(value = "/user")
 @Path(value = "/user")
 @Secured
@@ -85,7 +88,7 @@ public interface UserRESTService {
 			@ApiResponse(code = HTTPResponseCodes.NOT_FOUND, message = "Follower user not found in the follower list of the user"),
 			@ApiResponse(code = HTTPResponseCodes.INTERNAL_SERVER_ERROR, message = "The server experienced a runtime exception while processing the request. Try again later or contact customer support.")
 	})
-	Response unfollowUser(@PathParam("followerUserId") String fromUser, @PathParam("followedUserId") String toUserId);
+	Response unfollowUser(@PathParam("followerUserId") String followerUserId, @PathParam("followedUserId") String followedUserId);
 	
 	
     @Path("getfollowers/{userId}")

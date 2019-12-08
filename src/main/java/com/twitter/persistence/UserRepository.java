@@ -7,6 +7,10 @@ import org.springframework.data.repository.query.Param;
 
 import com.twitter.model.User;
 
+/**
+ * @author gauri sawant
+ *
+ */
 public interface UserRepository extends JpaRepository<User, Long> {
 	
 	int getUserNameCount(@Param("userName") String userName);
