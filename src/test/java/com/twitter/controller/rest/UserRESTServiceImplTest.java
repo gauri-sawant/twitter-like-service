@@ -25,6 +25,10 @@ import com.twitter.dto.UserDTO;
 import com.twitter.model.User;
 import com.twitter.persistence.UserRepository;
 
+/**
+ * @author gauri sawant
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class UserRESTServiceImplTest {
 
