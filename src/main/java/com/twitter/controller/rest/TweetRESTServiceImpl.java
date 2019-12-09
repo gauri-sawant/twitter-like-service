@@ -107,7 +107,7 @@ public class TweetRESTServiceImpl implements TweetRESTService {
 				return Response.status(HttpStatus.NOT_FOUND.value()).build();
 			}
 			
-			Optional<Tweet> tweet = tweetServiceImpl.findTweetById(Long.parseLong(tweetId));
+			Optional<Tweet> tweet = findTweetById(Long.parseLong(tweetId));
 			if(tweet.isPresent()) {
 				reply.setTweet(tweet.get());
 			} else {
