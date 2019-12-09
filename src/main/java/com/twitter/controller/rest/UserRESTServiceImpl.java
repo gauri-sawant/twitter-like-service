@@ -132,7 +132,7 @@ public class UserRESTServiceImpl implements UserRESTService {
 				return Response.status(HttpStatus.FORBIDDEN.value()).build();
 			} 
 			LOGGER.info("<<followUser is forbidden");
-			return Response.status(HttpStatus.FORBIDDEN.value()).build();
+			return Response.status(HttpStatus.NOT_FOUND.value()).build();
 		} catch(NumberFormatException nex) {
 			LOGGER.info("<<followUser :: Failed, bad userId parameter");
 			return Response.status(HttpStatus.BAD_REQUEST.value()).build();

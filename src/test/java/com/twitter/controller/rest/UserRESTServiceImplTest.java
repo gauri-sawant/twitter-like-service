@@ -4,9 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import static org.mockito.Mockito.never;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,10 +44,50 @@ public class UserRESTServiceImplTest {
 
 		User user = createUser(5L, "userName", "firstName", "lastName");
 		when(userRepo.save(any(User.class))).thenReturn(user);
-		UserDTO userDTO = createUserDTO();
+		UserDTO userDTO = createUserDTO("firstName", "lastName", "userName");
 		Response response = userRESTServiceImpl.createUser(userDTO);
 		verify(userRepo).save(any(User.class));
 		assertThat(response.getStatus(), is(201));
+	}
+	
+	@Test
+	public void shouldNotCreateNewUserWhenSameUserName() {
+
+		when(userRepo.getUserNameCount(anyString())).thenReturn(1);
+		UserDTO userDTO = createUserDTO("firstName", "lastName", "userName");
+		Response response = userRESTServiceImpl.createUser(userDTO);
+		verify(userRepo).getUserNameCount(anyString());
+		verify(userRepo, never()).save(any(User.class));
+		assertThat(response.getStatus(), is(409));
+	}
+	
+	@Test
+	public void shouldThrowInternalErrorIfException() {
+
+		when(userRepo.save(any(User.class))).thenThrow(NullPointerException.class);
+		UserDTO userDTO = createUserDTO("firstName", "lastName", "userName");
+		Response response = userRESTServiceImpl.createUser(userDTO);
+		verify(userRepo).save(any(User.class));
+		assertThat(response.getStatus(), is(500));
+	}
+	
+	@Test
+	public void shouldDeleteUser() {
+		
+		Response response = userRESTServiceImpl.deleteUser("1");
+		verify(userRepo).clearFollowers(anyLong());
+		verify(userRepo).deleteById(anyLong());
+		assertThat(response.getStatus(), is(204));
+	}
+	
+	
+	@Test
+	public void shouldNotDeleteUserWhenNumberFormatException() {
+		
+		Response response = userRESTServiceImpl.deleteUser("notANumber");
+		verify(userRepo, never()).clearFollowers(anyLong());
+		verify(userRepo, never()).deleteById(anyLong());
+		assertThat(response.getStatus(), is(400));
 	}
 
 	@Test
@@ -74,6 +115,15 @@ public class UserRESTServiceImplTest {
 		assertThat(response.getStatus(), is(200));
 
 	}
+	
+	@Test
+	public void shouldNotFollowUserWhenException() {
+		
+		when(userRepo.findById(anyLong())).thenReturn(null, null);
+		Response response = userRESTServiceImpl.followUser("5", "6");
+		verify(userRepo, never()).save(any(User.class));
+		assertThat(response.getStatus(), is(500));
+	}
 
 	@Test
 	public void shouldUnFollowUser() {
@@ -93,6 +143,15 @@ public class UserRESTServiceImplTest {
 	}
 	
 	@Test
+	public void shouldNotUnFollowUserWhenException() {
+		
+		when(userRepo.findById(anyLong())).thenReturn(null, null);
+		Response response = userRESTServiceImpl.unfollowUser("5", "6");
+		verify(userRepo, never()).save(any(User.class));
+		assertThat(response.getStatus(), is(500));
+	}
+	
+	@Test
 	public void shouldGetFollowers() {
 		
 		User follower1 = createUser(5L, "userName1", "firstName1", "lastName1");
@@ -109,8 +168,26 @@ public class UserRESTServiceImplTest {
 		assertThat(response.getStatus(), is(200));
 	}
 	
-	private UserDTO createUserDTO() {
-		return new UserDTO.Builder().firstName("firstName").lastName("lastName").userName("userName").build();
+	@Test
+	public void shouldNotGetFollowersWhenNumberFormatException() {
+		
+		verify(userRepo, never()).findById(anyLong());
+		Response response = userRESTServiceImpl.getfollowers("notANumber");
+		assertThat(response.getStatus(), is(400));
+	}
+	
+	@Test
+	public void shouldReturnNoContentWhenFollowersNotFound() {
+		
+		User followed = createUser(6L, "userName2", "firstName2", "lastName2");
+		when(userRepo.findById(anyLong())).thenReturn(Optional.of(followed));
+		Response response = userRESTServiceImpl.getfollowers("6");
+		verify(userRepo).findById(anyLong());
+		assertThat(response.getStatus(), is(204));
+	}
+	
+	private UserDTO createUserDTO(String firstName, String lastName, String userName) {
+		return new UserDTO.Builder().firstName(firstName).lastName(lastName).userName(userName).build();
 	}
 
 	private User createUser(Long id, String userName, String firstName, String lastName) {
