@@ -1,5 +1,8 @@
 package com.twitter.config;
-
+/**
+ * @author gauri sawant
+ *
+ */
 import javax.ws.rs.ApplicationPath;
 
 import org.glassfish.jersey.server.ResourceConfig;
