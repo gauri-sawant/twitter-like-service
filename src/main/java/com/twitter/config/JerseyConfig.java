@@ -6,7 +6,6 @@ package com.twitter.config;
 import javax.ws.rs.ApplicationPath;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.wadl.internal.WadlResource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +28,6 @@ public class JerseyConfig extends ResourceConfig {
     }
 
     private void registerEndpoints() {
-		register(WadlResource.class);
 		register(UserRESTService.class);
 		register(TweetRESTService.class);
     }
